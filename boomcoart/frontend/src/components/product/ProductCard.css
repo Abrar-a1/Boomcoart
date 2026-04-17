@@ -1,0 +1,166 @@
+/* ─── Product Card ────────────────────────────────────────── */
+.product-card {
+  display: block;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--gray-100);
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease;
+  text-decoration: none;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ─── Card Image ──────────────────────────────────────────── */
+.pc-img-wrap {
+  position: relative;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  background: var(--gray-50);
+}
+
+.pc-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.product-card:hover .pc-img {
+  transform: scale(1.04);
+}
+
+/* ─── Card Badges ─────────────────────────────────────────── */
+.pc-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--red);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.pc-oos {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+/* ─── Card Quick Actions ──────────────────────────────────── */
+.pc-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  opacity: 0;
+  transform: translateX(8px);
+  transition: all 0.2s ease;
+}
+
+.product-card:hover .pc-actions {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.pc-action {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--white);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--navy);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.15s;
+}
+
+.pc-action:hover:not(:disabled) {
+  background: var(--navy);
+  color: var(--gold);
+}
+
+.pc-action:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pc-action--active {
+  background: var(--red-light);
+  color: var(--red);
+}
+
+/* ─── Card Info ───────────────────────────────────────────── */
+.pc-info {
+  padding: 14px;
+}
+
+.pc-cat {
+  font-size: 11px;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.pc-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-700);
+  line-height: 1.4;
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.pc-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+
+.pc-reviews {
+  color: var(--gray-400);
+}
+
+/* ─── Card Price ──────────────────────────────────────────── */
+.pc-price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pc-price-current {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.pc-price-orig {
+  font-size: 13px;
+  color: var(--gray-400);
+  text-decoration: line-through;
+}

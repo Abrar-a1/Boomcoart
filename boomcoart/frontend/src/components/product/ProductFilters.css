@@ -1,0 +1,113 @@
+/* ─── Filters Container ───────────────────────────────────── */
+.filters {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  border: 1px solid var(--gray-100);
+}
+
+/* ─── Filters Header ──────────────────────────────────────── */
+.filters-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filters-header h3 {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  color: var(--navy);
+}
+
+.filters-clear {
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: var(--red);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.filters-clear:hover {
+  text-decoration: underline;
+}
+
+/* ─── Filter Section ──────────────────────────────────────── */
+.filter-section {
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--gray-100);
+  padding-bottom: 18px;
+}
+
+.filter-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.filter-section h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+/* ─── Filter Pills ────────────────────────────────────────── */
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.filter-pill {
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--gray-200);
+  background: var(--white);
+  font-size: 12px;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-weight: 500;
+}
+
+.filter-pill:hover {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+.filter-pill.active {
+  background: var(--navy);
+  color: var(--gold);
+  border-color: var(--navy);
+}
+
+/* ─── Filter Rows ─────────────────────────────────────────── */
+.filter-row {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-bottom: 2px;
+}
+
+.filter-row:hover {
+  background: var(--gray-50);
+  color: var(--navy);
+}
+
+.filter-row.active {
+  background: var(--navy);
+  color: var(--gold);
+  font-weight: 600;
+}

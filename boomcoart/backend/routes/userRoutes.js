@@ -1,0 +1,12 @@
+const express = require('express');
+const r = express.Router();
+const { toggleWishlist, getWishlist, addAddress, deleteAddress, getAllUsers, updateUserRole, deactivateUser } = require('../controllers/userController');
+const { protect, admin } = require('../middleware/authMiddleware');
+r.post('/wishlist/:productId', protect, toggleWishlist);
+r.get('/wishlist', protect, getWishlist);
+r.post('/addresses', protect, addAddress);
+r.delete('/addresses/:addressId', protect, deleteAddress);
+r.get('/admin/all', protect, admin, getAllUsers);
+r.put('/admin/:id/role', protect, admin, updateUserRole);
+r.delete('/admin/:id', protect, admin, deactivateUser);
+module.exports = r;

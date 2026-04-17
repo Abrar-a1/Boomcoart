@@ -1,0 +1,13 @@
+const express = require('express');
+const r = express.Router();
+const { createOrder, getMyOrders, getDashboardStats, getAllOrders, getOrderById, updateOrderStatus, cancelOrder, cleanupUnpaidOrders } = require('../controllers/orderController');
+const { protect, admin } = require('../middleware/authMiddleware');
+r.post('/', protect, createOrder);
+r.get('/my-orders', protect, getMyOrders);
+r.get('/admin/stats', protect, admin, getDashboardStats);
+r.get('/admin/all', protect, admin, getAllOrders);
+r.delete('/admin/cleanup', protect, admin, cleanupUnpaidOrders);
+r.get('/:id', protect, getOrderById);
+r.put('/:id/status', protect, admin, updateOrderStatus);
+r.put('/:id/cancel', protect, cancelOrder);
+module.exports = r;

@@ -1,0 +1,176 @@
+/* ─── Admin Layout ────────────────────────────────────────── */
+.admin-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: calc(100vh - 130px);
+}
+
+/* ─── Admin Sidebar ───────────────────────────────────────── */
+.admin-sidebar {
+  background: var(--navy);
+  padding: 28px 0;
+  position: sticky;
+  top: 0;
+  height: calc(100vh - 130px);
+  overflow-y: auto;
+}
+
+.admin-sidebar-title {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  color: var(--gold);
+  padding: 0 20px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 8px;
+}
+
+.admin-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 20px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.15s;
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+}
+
+.admin-nav-link:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--white);
+}
+
+.admin-nav-link.active {
+  background: rgba(232, 197, 71, 0.1);
+  color: var(--gold);
+  border-left-color: var(--gold);
+}
+
+/* ─── Admin Content ───────────────────────────────────────── */
+.admin-content {
+  padding: 32px;
+  background: var(--cream);
+  overflow-y: auto;
+}
+
+.admin-page-title {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  color: var(--navy);
+  margin-bottom: 28px;
+}
+
+/* ─── Stat Cards ──────────────────────────────────────────── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  border: 1px solid var(--gray-100);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+/* ─── Admin Form Grid ─────────────────────────────────────── */
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.admin-form-grid .full {
+  grid-column: 1 / -1;
+}
+
+/* ─── Image Previews ──────────────────────────────────────── */
+.img-preview-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.img-preview {
+  width: 80px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--gray-200);
+}
+
+/* ─── Upload Zone ─────────────────────────────────────────── */
+.upload-zone {
+  border: 2px dashed var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--gray-50);
+}
+
+.upload-zone:hover {
+  border-color: var(--navy);
+  background: var(--cream);
+}
+
+.upload-zone input {
+  display: none;
+}
+
+/* ─── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar {
+    height: auto;
+    position: relative;
+  }
+
+  .admin-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
