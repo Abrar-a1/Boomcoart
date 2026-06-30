@@ -1,140 +1,231 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { FiFilter, FiX } from 'react-icons/fi';
-import { getProducts } from '../services/productService';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { FiFilter, FiX, FiArrowRight } from 'react-icons/fi';
+import { Helmet } from 'react-helmet-async';
 import ProductCard from '../components/product/ProductCard';
 import ProductFilters from '../components/product/ProductFilters';
-import Loader, { Pagination } from '../components/common/Loader';
-import { Helmet } from 'react-helmet-async';
-import './Home.css';
-
-const SLIDES = [
-  { title: 'Bridal Collection 2025', sub: 'Ethereal lehengas & sarees for your special day', cat: 'bridal', bg: 'linear-gradient(135deg,#1a1a2e 0%,#4a1a5e 100%)' },
-  { title: "Men's Ethnic Wear",       sub: 'Sherwanis, kurtas & suits crafted to perfection', cat: 'men',    bg: 'linear-gradient(135deg,#0f3460 0%,#1a1a2e 100%)' },
-  { title: "Women's Fashion",         sub: 'Sarees, lehengas & western wear for every mood', cat: 'women',  bg: 'linear-gradient(135deg,#2d1b4e 0%,#1a1a2e 100%)' },
-];
+import { Pagination } from '../components/common/Loader';
+import productService from '../services/productService';
 
 export default function Home() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [products, setProducts]         = useState([]);
-  const [loading, setLoading]           = useState(true);
-  const [totalPages, setTotalPages]     = useState(1);
-  const [totalProducts, setTotalProducts] = useState(0);
-  const [page, setPage]                 = useState(1);
-  const [slideIdx, setSlideIdx]         = useState(0);
-  const [showFilters, setShowFilters]   = useState(false);
+  const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const hasFilters = [...params.keys()].length > 0;
 
-  const keyword = searchParams.get('keyword') || '';
-  const isFiltered = [...searchParams.keys()].length > 0;
+  const [products, setProducts] = useState([]);
+  const [featured, setFeatured] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [mobileFilter, setMobileFilter] = useState(false);
+
+  // Dynamic theme state
+  const [activeTheme, setActiveTheme] = useState('default'); // 'default' | 'kids' | 'bridal'
 
   useEffect(() => {
-    setPage(1); // Fix #4: reset to page 1 whenever filters or search change
-  }, [searchParams]);
+    productService.getProducts({ isFeatured: true, limit: 8 })
+      .then(res => { setFeatured(res.data.data || res.data.products || []); })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     setLoading(true);
-    const params = { ...Object.fromEntries(searchParams.entries()), page };
-    getProducts(params)
-      .then(({ data }) => { setProducts(data.data); setTotalPages(data.totalPages); setTotalProducts(data.totalProducts); })
-      .catch(console.error)
+    const filters = Object.fromEntries(params.entries());
+    filters.page = page;
+    filters.limit = 12;
+    productService.getProducts(filters)
+      .then(res => {
+        const d = res.data;
+        setProducts(d.data || d.products || []);
+        setTotalPages(d.totalPages || d.pages || 1);
+      })
+      .catch(() => {})
       .finally(() => setLoading(false));
-  }, [searchParams, page]);
+  }, [params, page]);
 
-  useEffect(() => {
-    if (isFiltered) return;
-    const t = setInterval(() => setSlideIdx(i => (i + 1) % SLIDES.length), 5000);
-    return () => clearInterval(t);
-  }, [isFiltered]);
+  // Theme background colors
+  const themeBg = {
+    default: '#FDF7F0',
+    kids:    '#FFF8F0',
+    bridal:  '#FAF5F0',
+  };
 
-  const slide = SLIDES[slideIdx];
+  const SkeletonCard = () => (
+    <div className="bg-white rounded-xl border border-[#f0e8da] overflow-hidden">
+      <div className="skeleton aspect-[4/5]" />
+      <div className="p-4 flex flex-col gap-2.5">
+        <div className="skeleton h-3 w-3/5" />
+        <div className="skeleton h-4 w-11/12" />
+        <div className="skeleton h-3.5 w-2/5" />
+        <div className="skeleton h-10 w-full rounded-full" />
+      </div>
+    </div>
+  );
 
   return (
-    <>
-      <Helmet><title>Boomcoart — Premium Fashion Store</title></Helmet>
+    <div className="flex justify-center page-transition" style={{ backgroundColor: themeBg[activeTheme] }}>
+      <div className="w-full max-w-[1000px] space-y-8 lg:space-y-12">
+        <Helmet><title>Boomcoart — Discover Your Style</title></Helmet>
 
-      {!isFiltered && (
-        <section className="hero" style={{ background: slide.bg }}>
-          <div className="container hero-inner">
-            <div className="hero-content fade-in" key={slideIdx}>
-              <span className="badge badge-gold" style={{ marginBottom: 16 }}>New Collection</span>
-              <h1 className="hero-title">{slide.title}</h1>
-              <p className="hero-sub">{slide.sub}</p>
-              <div className="hero-btns">
-                <button className="btn btn-gold btn-lg" onClick={() => setSearchParams({ category: slide.cat })}>
-                  Shop Now →
-                </button>
-                <button className="btn btn-outline-white" onClick={() => setSearchParams({ isFeatured: 'true' })}>
-                  View Featured
-                </button>
-              </div>
-            </div>
-            <div className="hero-dots">
-              {SLIDES.map((_, i) => (
-                <button key={i} className={`hero-dot ${i === slideIdx ? 'active' : ''}`} onClick={() => setSlideIdx(i)} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      {/* ═══════════════════════════════════════════════════ */}
+      {/* ═══ HERO BANNERS ════════════════════════════════ */}
+      {/* ═══════════════════════════════════════════════════ */}
+      {!hasFilters && (
+        <section className="pt-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-      {!isFiltered && (
-        <section className="cat-strip">
-          <div className="container">
-            <div className="cat-pills">
-              {[['👰 Bridal','bridal'],['👔 Men','men'],['👗 Women','women'],['👦 Boys','boys'],['👧 Girls','girls']].map(([l,v]) => (
-                <button key={v} className="cat-pill" onClick={() => setSearchParams({ category: v })}>{l}</button>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      <section className="products-section">
-        <div className="container products-layout">
-          <aside className="filters-sidebar">
-            <ProductFilters />
-          </aside>
-
-          <div className="products-main">
-            <div className="products-topbar">
-              <div>
-                <h2 style={{ fontSize: 22, fontFamily: 'var(--font-serif)', color: 'var(--navy)' }}>
-                  {keyword ? `Results for "${keyword}"` : isFiltered ? 'Filtered Products' : 'All Products'}
-                </h2>
-                <p style={{ color: 'var(--gray-400)', fontSize: 14, marginTop: 2 }}>{totalProducts} items found</p>
-              </div>
-              <button className="mobile-filter-btn" onClick={() => setShowFilters(true)}>
-                <FiFilter size={15} /> Filters
-              </button>
-            </div>
-
-            {showFilters && (
-              <div className="mobile-drawer-overlay" onClick={() => setShowFilters(false)}>
-                <div className="mobile-drawer" onClick={e => e.stopPropagation()}>
-                  <button className="mobile-drawer-close" onClick={() => setShowFilters(false)}><FiX size={20} /></button>
-                  <ProductFilters onClose={() => setShowFilters(false)} />
+              {/* ──── PLAYFUL KIDS BANNER ──── */}
+              <div
+                onClick={() => { setActiveTheme('kids'); navigate('/kids'); }}
+                className="group relative cursor-pointer rounded-2xl overflow-hidden border border-[#E5D9C5] bg-white/40 shadow-sm transition-all duration-300 hover:shadow-md p-6 lg:p-8 flex flex-col justify-center text-center md:text-left"
+              >
+                <div className="flex flex-col items-center md:items-start z-10">
+                  <h2 className="font-heading text-3xl md:text-4xl text-[#1E3A3A] mb-3">
+                    Playful Kids
+                  </h2>
+                  <p className="text-[#2C3E2F] text-sm md:text-base max-w-[280px] mb-6 leading-relaxed">
+                    Bright colors, comfy fabrics, and endless adventures for your little ones!
+                  </p>
+                  <div>
+                    <button
+                      className="inline-flex items-center justify-center bg-[#C25A3C] text-white px-5 py-2 rounded-full min-h-[44px] hover:bg-[#a4462e] transition-all hover:shadow-md"
+                      onClick={(e) => { e.stopPropagation(); navigate('/kids'); }}
+                    >
+                      SHOP KIDS
+                    </button>
+                  </div>
+                </div>
+                {/* Decorative emoji */}
+                <div className="absolute right-4 bottom-4 md:right-8 md:bottom-8 text-5xl md:text-7xl opacity-90 drop-shadow-sm pointer-events-none transition-transform group-hover:scale-105">
+                  🧸
                 </div>
               </div>
-            )}
 
-            {loading ? <Loader /> : products.length === 0 ? (
-              <div className="empty-state">
-                <p style={{ fontSize: 48 }}>😔</p>
-                <h3>No products found</h3>
-                <p>Try adjusting your filters or search term.</p>
-                <button className="btn btn-primary" onClick={() => setSearchParams({})}>Clear Filters</button>
+              {/* ──── ELEGANT BRIDAL BANNER ──── */}
+              <div
+                onClick={() => { setActiveTheme('bridal'); navigate('/bridal'); }}
+                className="group relative cursor-pointer rounded-2xl overflow-hidden border border-[#E5D9C5] bg-white/40 shadow-sm transition-all duration-300 hover:shadow-md p-6 lg:p-8 flex flex-col justify-center text-center md:text-left"
+              >
+                <div className="flex flex-col items-center md:items-start z-10">
+                  <h2 className="font-heading text-3xl md:text-4xl text-[#1E3A3A] tracking-wider uppercase mb-3 text-center md:text-left">
+                    Elegant<br className="hidden md:block"/> Bridal
+                  </h2>
+                  <p className="text-[#2C3E2F] text-sm md:text-base max-w-[280px] mb-6 leading-relaxed">
+                    Reserve your tailored consultation. Experiencing luxury has never been this effortless.
+                  </p>
+                  <div>
+                    <button
+                      className="inline-flex items-center justify-center bg-[#C25A3C] text-white px-5 py-2 rounded-full min-h-[44px] hover:bg-[#a4462e] transition-all hover:shadow-md"
+                      onClick={(e) => { e.stopPropagation(); navigate('/bridal'); }}
+                    >
+                      ENTER THE BOUTIQUE
+                    </button>
+                  </div>
+                </div>
+                {/* Decorative emoji */}
+                <div className="absolute right-4 bottom-4 md:right-8 md:bottom-8 text-5xl md:text-7xl opacity-90 drop-shadow-sm pointer-events-none transition-transform group-hover:scale-105">
+                  ✨
+                </div>
               </div>
-            ) : (
-              <>
-                <div className="products-grid">
+
+            </div>
+        </section>
+      )}
+
+      {/* ═══ FEATURED PRODUCTS ═══ */}
+      {!hasFilters && featured.length > 0 && (
+        <section>
+          <div className="w-full">
+            <div className="text-center mb-8 flex flex-col items-center">
+              <h2 className="font-heading text-3xl text-[#1E3A3A] mb-3">All Products</h2>
+              <div className="flex items-center justify-center w-full max-w-xs gap-3">
+                <div className="h-[1px] flex-1 bg-[#D4AF37]/50" />
+                <span className="text-[10px] text-[#D4AF37]">❖</span>
+                <div className="h-[1px] flex-1 bg-[#D4AF37]/50" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {featured.slice(0, 8).map(p => (
+                <ProductCard key={p._id} product={p} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ═══ PRODUCT CATALOG ═══ */}
+      <section>
+        <div className="w-full">
+          <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
+
+            {/* ── Filter Sidebar — Desktop ── */}
+            <aside className="hidden lg:block w-64 shrink-0 sticky top-32">
+              <div
+                className="rounded-2xl p-5 transition-shadow"
+                style={{
+                  backgroundColor: '#ffffff',
+                  border: '1.5px solid #E5D9C5',
+                  boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+                }}
+              >
+                <ProductFilters />
+              </div>
+            </aside>
+
+            {/* ── Products Grid ── */}
+            <div className="flex-1 w-full">
+              <div className="flex items-end justify-between mb-7">
+                <div>
+                  <h2 className="font-heading text-3xl lg:text-4xl text-[#1E3A3A]">{hasFilters ? 'Results' : 'All Products'}</h2>
+                  <p className="text-sm text-[#6b7c6e] mt-1">{products.length} products found</p>
+                </div>
+                <button
+                  className="lg:hidden flex items-center gap-2 px-4 py-2.5 bg-[#1E3A3A] text-white rounded-full text-sm font-semibold hover:bg-[#2a5050] transition-colors shadow-sm"
+                  onClick={() => setMobileFilter(true)}
+                >
+                  <FiFilter size={14} /> Filters
+                </button>
+              </div>
+
+              {loading ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6">
+                  {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
+                </div>
+              ) : products.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-24 rounded-2xl w-full" style={{ backgroundColor: '#ffffff', border: '1px solid #E5D9C5', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+                  <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: '#FDF7F0' }}>
+                    <span className="text-3xl text-[#D4AF37]">🛍️</span>
+                  </div>
+                  <h3 className="font-heading text-3xl font-bold mb-3" style={{ color: '#1E3A3A' }}>0 products found</h3>
+                  <p className="text-[#2C3E2F] font-medium" style={{ opacity: 0.8 }}>Try adjusting your filters or search terms.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6">
                   {products.map(p => <ProductCard key={p._id} product={p} />)}
                 </div>
-                <Pagination currentPage={page} totalPages={totalPages} onPageChange={p => { setPage(p); window.scrollTo({ top: 400, behavior: 'smooth' }); }} />
-              </>
-            )}
+              )}
+
+              <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+            </div>
           </div>
         </div>
       </section>
-    </>
+
+      {/* ── Mobile filter drawer ── */}
+      {mobileFilter && (
+        <div className="fixed inset-0 bg-black/40 z-[200] backdrop-blur-sm" onClick={() => setMobileFilter(false)}>
+          <div className="absolute left-0 top-0 bottom-0 w-[300px] bg-white overflow-y-auto shadow-2xl flex flex-col" onClick={e => e.stopPropagation()} style={{ animation: 'slideInRight 0.2s ease' }}>
+            <div className="flex items-center justify-between px-5 py-4 bg-[#1E3A3A] text-white">
+              <span className="font-heading text-lg font-bold">Filters</span>
+              <button onClick={() => setMobileFilter(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors"><FiX size={16} /></button>
+            </div>
+            <div className="p-4">
+              <ProductFilters onClose={() => setMobileFilter(false)} />
+            </div>
+          </div>
+        </div>
+      )}
+      </div>
+    </div>
   );
 }

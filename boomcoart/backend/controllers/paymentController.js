@@ -77,7 +77,17 @@ const handleWebhook = asyncHandler(async (req, res) => {
     : (typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
   const expected = crypto.createHmac('sha256', secret).update(body).digest('hex');
   if (expected !== sig) return res.status(400).json({ message: 'Invalid signature' });
-  if (req.body.event === 'payment.captured') console.log(`✅ Webhook: payment captured ${req.body.payload?.payment?.entity?.id}`);
+  
+  let payloadObj;
+  try {
+    payloadObj = JSON.parse(body);
+  } catch (err) {
+    return res.status(400).json({ message: 'Invalid JSON payload' });
+  }
+
+  if (payloadObj.event === 'payment.captured') {
+    console.log(`✅ Webhook: payment captured ${payloadObj.payload?.payment?.entity?.id}`);
+  }
   res.json({ received: true });
 });
 

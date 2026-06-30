@@ -2,18 +2,18 @@ const asyncHandler = require('express-async-handler');
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 const User = require('../models/User');
+const productService = require('../services/productService');
 const { sendEmail, orderConfirmationEmail } = require('../utils/sendEmail');
 
 // POST /api/orders
 const createOrder = asyncHandler(async (req, res) => {
   const { orderItems, shippingAddress, paymentMethod, itemsPrice, shippingPrice, taxPrice, totalPrice, couponCode, discountAmount } = req.body;
   if (!orderItems?.length) { res.status(400); throw new Error('No order items'); }
+  
+  // Delegate atomic stock checking to the strict service layer
   for (const item of orderItems) {
-    const p = await Product.findById(item.product);
-    if (!p) { res.status(404); throw new Error(`Product not found: ${item.product}`); }
-    if (p.stock < item.quantity) { res.status(400); throw new Error(`Insufficient stock: ${p.name}`); }
+    await productService.validateAndDecrementStock(item.product, item.size, item.quantity);
   }
-  for (const item of orderItems) await Product.findByIdAndUpdate(item.product, { $inc: { stock: -item.quantity } });
 
   const order = await Order.create({
     user: req.user._id, orderItems, shippingAddress, paymentMethod,
@@ -99,9 +99,9 @@ const cancelOrder = asyncHandler(async (req, res) => {
   if (!cancellable.includes(order.orderStatus)) {
     res.status(400); throw new Error(`Cannot cancel an order that is already ${order.orderStatus}`);
   }
-  // Restore stock
+  // Restore stock intelligently via Service Layer
   for (const item of order.orderItems) {
-    await Product.findByIdAndUpdate(item.product, { $inc: { stock: item.quantity } });
+    await productService.restoreStock(item.product, item.size, item.quantity);
   }
   order.orderStatus = 'cancelled';
   await order.save();
@@ -124,7 +124,7 @@ const cleanupUnpaidOrders = asyncHandler(async (req, res) => {
   for (const order of staleOrders) {
     // Restore stock
     for (const item of order.orderItems) {
-      await Product.findByIdAndUpdate(item.product, { $inc: { stock: item.quantity } });
+      await productService.restoreStock(item.product, item.size, item.quantity);
     }
     order.orderStatus = 'cancelled';
     await order.save();

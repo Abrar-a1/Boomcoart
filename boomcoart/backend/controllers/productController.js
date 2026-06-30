@@ -10,13 +10,12 @@ const safeParse = (val, fallback) => {
 
 // GET /api/products
 const getProducts = asyncHandler(async (req, res) => {
-  const perPage = 12;
   const features = new ApiFeatures(Product.find({ isActive: true }).select('-__v'), req.query)
-    .search().filter().sort().paginate(perPage);
+    .search().filter().sort().paginate();
   const products = await features.query;
   // Count with same filters so totalProducts & totalPages are accurate
   const total = await Product.countDocuments({ isActive: true, ...features.countFilter });
-  res.json({ success: true, totalProducts: total, resultsPerPage: perPage, currentPage: features.currentPage, totalPages: Math.ceil(total / perPage), data: products });
+  res.json({ success: true, totalProducts: total, resultsPerPage: features.resultsPerPage, currentPage: features.currentPage, totalPages: Math.ceil(total / features.resultsPerPage), data: products });
 });
 
 // GET /api/products/featured
@@ -27,8 +26,11 @@ const getFeaturedProducts = asyncHandler(async (req, res) => {
 
 // GET /api/products/admin/all
 const getAdminProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find().sort('-createdAt');
-  res.json({ success: true, count: products.length, data: products });
+  // Use ApiFeatures to bring pagination, sorting, and search to the admin panel
+  const features = new ApiFeatures(Product.find(), req.query).search().filter().sort().paginate();
+  const products = await features.query;
+  const total = await Product.countDocuments(features.countFilter);
+  res.json({ success: true, totalProducts: total, resultsPerPage: features.resultsPerPage, currentPage: features.currentPage, totalPages: Math.ceil(total / features.resultsPerPage), data: products });
 });
 
 // GET /api/products/:id

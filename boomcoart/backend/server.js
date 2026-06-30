@@ -4,6 +4,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ const orderRoutes   = require('./routes/orderRoutes');
 const userRoutes    = require('./routes/userRoutes');
 const reviewRoutes  = require('./routes/reviewRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const appointmentRoutes = require('./routes/appointmentRoutes');
 
 connectDB();
 scheduleCloudinaryCleanup(); // Auto-delete expired media daily
@@ -39,8 +41,12 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
+// Data sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
 const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 200 });
-const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20 });
+// Strict rate limit on Auth to deter credential stuffing (max 5 requests per 15 minutes per IP)
+const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 5, message: 'Too many login attempts, try again after 15 minutes' });
 app.use('/api/', limiter);
 
 app.get('/api/health', (req, res) => res.json({ status: 'OK', app: 'Boomcoart API' }));
@@ -50,6 +56,7 @@ app.use('/api/orders',   orderRoutes);
 app.use('/api/users',    userRoutes);
 app.use('/api/reviews',  reviewRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/appointments', appointmentRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

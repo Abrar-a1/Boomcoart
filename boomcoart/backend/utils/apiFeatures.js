@@ -53,10 +53,14 @@ class ApiFeatures {
     return this;
   }
 
-  paginate(perPage = 12) {
+  paginate() {
     const page = Number(this.queryStr.page) || 1;
-    this.query = this.query.skip(perPage * (page - 1)).limit(perPage);
+    const limit = Number(this.queryStr.limit) || 12;
+    // Cap limit to prevent excessive data loading
+    const finalLimit = limit > 100 ? 100 : limit;
+    this.query = this.query.skip(finalLimit * (page - 1)).limit(finalLimit);
     this.currentPage = page;
+    this.resultsPerPage = finalLimit;
     return this;
   }
 }

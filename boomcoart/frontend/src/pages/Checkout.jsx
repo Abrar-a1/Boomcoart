@@ -78,7 +78,7 @@ export default function Checkout() {
             } catch { reject(new Error('Payment verification failed')); }
           },
           prefill: { name: user.name, email: user.email, contact: addr.phone },
-          theme: { color: '#1a1a2e' },
+          theme: { color: '#1E3A3A' },
           modal: { ondismiss: () => reject(new Error('Payment cancelled')) },
         };
         const rzp = new window.Razorpay(options);
@@ -104,13 +104,13 @@ export default function Checkout() {
             <div key={s.n} style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div style={{ width: 36, height: 36, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 14,
-                  background: step > s.n ? 'var(--green)' : step === s.n ? 'var(--navy)' : 'var(--gray-100)',
-                  color: step >= s.n ? 'var(--white)' : 'var(--gray-400)' }}>
+                  background: step > s.n ? 'var(--green)' : step === s.n ? 'var(--primary)' : 'var(--gray-100)',
+                  color: step >= s.n ? 'var(--white)' : 'var(--text-light)' }}>
                   {step > s.n ? <FiCheck size={16}/> : s.n}
                 </div>
-                <span style={{ fontSize: 14, fontWeight: 600, color: step >= s.n ? 'var(--navy)' : 'var(--gray-400)' }}>{s.l}</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: step >= s.n ? 'var(--primary)' : 'var(--text-light)' }}>{s.l}</span>
               </div>
-              {idx === 0 && <div style={{ flex: 1, height: 2, background: step > 1 ? 'var(--navy)' : 'var(--gray-200)', margin: '0 12px' }} />}
+              {idx === 0 && <div style={{ flex: 1, height: 2, background: step > 1 ? 'var(--primary)' : 'var(--border)', margin: '0 12px' }} />}
             </div>
           ))}
         </div>
@@ -120,7 +120,7 @@ export default function Checkout() {
             {/* Step 1: Address */}
             {step === 1 && (
               <div className="card" style={{ padding: 28 }}>
-                <h3 style={{ marginBottom: 20, fontFamily: 'var(--font-serif)', fontSize: 20, color: 'var(--navy)' }}>Delivery Address</h3>
+                <h3 style={{ marginBottom: 20, fontFamily: 'var(--font-serif)', fontSize: 20, color: 'var(--primary)' }}>Delivery Address</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                   {[{n:'fullName',l:'Full Name',p:'John Doe',col:'1/-1'},{n:'phone',l:'Phone Number',p:'10-digit mobile'},{n:'addressLine1',l:'Address Line 1',p:'House no, Street',col:'1/-1'},{n:'addressLine2',l:'Address Line 2 (optional)',p:'Landmark, Area',col:'1/-1'},{n:'city',l:'City'},{n:'pincode',l:'Pincode',p:'6-digit'}].map(f => (
                     <div key={f.n} className="form-group" style={{ gridColumn: f.col || 'auto' }}>
@@ -145,14 +145,14 @@ export default function Checkout() {
             {/* Step 2: Payment */}
             {step === 2 && (
               <div className="card" style={{ padding: 28 }}>
-                <h3 style={{ marginBottom: 20, fontFamily: 'var(--font-serif)', fontSize: 20, color: 'var(--navy)' }}>Payment Method</h3>
+                <h3 style={{ marginBottom: 20, fontFamily: 'var(--font-serif)', fontSize: 20, color: 'var(--primary)' }}>Payment Method</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   {[{v:'razorpay',l:'Pay Online (Razorpay)',sub:'Credit/Debit Card, UPI, Net Banking'},{v:'cod',l:'Cash on Delivery',sub:'Pay when your order arrives'}].map(opt => (
-                    <label key={opt.v} style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '16px 18px', border: `2px solid ${payMethod===opt.v?'var(--navy)':'var(--gray-200)'}`, borderRadius: 'var(--radius-lg)', cursor: 'pointer', background: payMethod===opt.v?'var(--cream)':'var(--white)', transition: 'all .15s' }}>
+                    <label key={opt.v} style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '16px 18px', border: `2px solid ${payMethod===opt.v?'var(--primary)':'var(--border)'}`, borderRadius: 'var(--radius-lg)', cursor: 'pointer', background: payMethod===opt.v?'var(--cream)':'var(--white)', transition: 'all .15s' }}>
                       <input type="radio" name="pay" value={opt.v} checked={payMethod===opt.v} onChange={() => setPayMethod(opt.v)} style={{ marginTop: 3 }} />
                       <div>
-                        <p style={{ fontWeight: 700, color: 'var(--navy)', fontSize: 15 }}>{opt.l}</p>
-                        <p style={{ fontSize: 13, color: 'var(--gray-400)', marginTop: 2 }}>{opt.sub}</p>
+                        <p style={{ fontWeight: 700, color: 'var(--primary)', fontSize: 15 }}>{opt.l}</p>
+                        <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>{opt.sub}</p>
                       </div>
                     </label>
                   ))}
@@ -169,26 +169,26 @@ export default function Checkout() {
 
           {/* Order summary */}
           <div className="card" style={{ padding: 22, position: 'sticky', top: 100 }}>
-            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: 18, color: 'var(--navy)', marginBottom: 16 }}>Your Order</h4>
+            <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: 18, color: 'var(--primary)', marginBottom: 16 }}>Your Order</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
               {items.map(i => (
                 <div key={i._key} style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                   <img src={i.image} alt={i.name} style={{ width: 44, height: 54, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
                   <div style={{ flex: 1 }}>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-700)', lineHeight: 1.3 }}>{i.name}</p>
-                    {i.size && <p style={{ fontSize: 11, color: 'var(--gray-400)' }}>Size: {i.size}</p>}
-                    <p style={{ fontSize: 12, color: 'var(--navy)', fontWeight: 700 }}>₹{(i.price*i.quantity).toLocaleString()} ×{i.quantity}</p>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', lineHeight: 1.3 }}>{i.name}</p>
+                    {i.size && <p style={{ fontSize: 11, color: 'var(--text-light)' }}>Size: {i.size}</p>}
+                    <p style={{ fontSize: 12, color: 'var(--primary)', fontWeight: 700 }}>₹{(i.price*i.quantity).toLocaleString()} ×{i.quantity}</p>
                   </div>
                 </div>
               ))}
             </div>
             <hr className="divider" />
             {[['Subtotal', `₹${itemsPrice.toLocaleString()}`],['Shipping', shippingPrice===0?'FREE':`₹${shippingPrice}`],['Tax','₹'+taxPrice]].map(([l,v]) => (
-              <div key={l} style={{ display:'flex', justifyContent:'space-between', fontSize:13, color:'var(--gray-500)', marginBottom:8 }}>
+              <div key={l} style={{ display:'flex', justifyContent:'space-between', fontSize:13, color:'var(--text-muted)', marginBottom:8 }}>
                 <span>{l}</span><span style={{ color: v==='FREE'?'var(--green)':undefined }}>{v}</span>
               </div>
             ))}
-            <div style={{ display:'flex', justifyContent:'space-between', fontWeight:700, fontSize:17, color:'var(--navy)', borderTop:'2px solid var(--navy)', paddingTop:10, marginTop:4 }}>
+            <div style={{ display:'flex', justifyContent:'space-between', fontWeight:700, fontSize:17, color:'var(--primary)', borderTop:'2px solid var(--primary)', paddingTop:10, marginTop:4 }}>
               <span>Total</span><span>₹{totalPrice.toLocaleString()}</span>
             </div>
           </div>

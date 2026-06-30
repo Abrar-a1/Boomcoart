@@ -4,8 +4,13 @@ import Footer from './components/common/Footer';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import AdminRoute from './components/common/AdminRoute';
 import Home from './pages/Home';
-import ProductDetail from './pages/ProductDetail';
-import Cart from './pages/Cart';
+
+// Category Pages
+import KidsCatalog from './pages/kids/KidsCatalog';
+import BridalCatalog from './pages/bridal/BridalCatalog';
+import ProductDetail from './pages/product/ProductDetail';
+
+import Cart from './pages/cart/Cart';
 import Checkout from './pages/Checkout';
 import OrderSuccess from './pages/OrderSuccess';
 import OrderTracking from './pages/OrderTracking';
@@ -23,12 +28,17 @@ import AdminUsers from './pages/admin/Users';
 
 export default function App() {
   return (
-    <>
+    <div className="flex flex-col min-h-screen" style={{ backgroundColor: '#FDF7F0' }}>
+      {/* ── Single global Navbar — never duplicated ── */}
       <Navbar />
-      <main style={{ minHeight: 'calc(100vh - 130px)' }}>
-        <Routes>
-          {/* Public */}
+
+      <main className="flex-grow flex justify-center">
+        <div className="w-full max-w-[1100px] px-4 md:px-6 lg:px-8 py-6">
+          <Routes>
+            {/* Public */}
           <Route path="/"                       element={<Home />} />
+          <Route path="/kids"                   element={<KidsCatalog />} />
+          <Route path="/bridal"                 element={<BridalCatalog />} />
           <Route path="/product/:id"            element={<ProductDetail />} />
           <Route path="/cart"                   element={<Cart />} />
           <Route path="/login"                  element={<Login />} />
@@ -54,9 +64,12 @@ export default function App() {
           </Route>
 
           <Route path="*" element={<NotFound />} />
-        </Routes>
+          </Routes>
+        </div>
       </main>
+
+      {/* ── Single global Footer ── */}
       <Footer />
-    </>
+    </div>
   );
 }

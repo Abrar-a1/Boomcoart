@@ -7,18 +7,31 @@ const productSchema = new mongoose.Schema({
   discountPrice:{ type: Number, default: 0, min: 0 },
   category: {
     type: String, required: true,
-    enum: ['men','women','bridal','boys','girls','unisex'],
+    enum: ['kids', 'bridal', 'men', 'women', 'unisex'],
   },
   subCategory: {
     type: String, required: true,
-    enum: ['shirts','pants','kurta','saree','lehenga','dress','jeans',
-           'jacket','suit','sherwani','tops','skirts','ethnic','western','accessories'],
   },
   images: [{ url: { type: String, required: true }, publicId: { type: String, required: true } }],
   video:  { url: { type: String, default: '' }, publicId: { type: String, default: '' } },
-  sizes:  { type: [String], enum: ['XS','S','M','L','XL','XXL','XXXL','Free Size'], default: [] },
+  sizes: [
+    {
+      size: { type: String, required: true },
+      stock: { type: Number, required: true, min: 0, default: 0 }
+    }
+  ],
   colors: [{ type: String }],
   stock:      { type: Number, required: true, min: 0, default: 0 },
+  
+  // --- Kids-specific fields ---
+  ageGroup: { type: String, enum: ['0-2', '3-5', '6-10', '11+'] },
+  fabricType: { type: String },
+
+  // --- Bridal-specific fields ---
+  isCustomizable: { type: Boolean, default: false },
+  hasTrial: { type: Boolean, default: false },
+  priceRange: { type: String },
+
   ratings:    { type: Number, default: 0, min: 0, max: 5 },
   numReviews: { type: Number, default: 0 },
   tags:       [{ type: String }],
