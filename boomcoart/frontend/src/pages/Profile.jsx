@@ -99,7 +99,7 @@ export default function Profile() {
 
   return (
     <div className="page">
-      <Helmet><title>My Profile — Boomcoart</title></Helmet>
+      <Helmet><title>My Profile — Musaar</title></Helmet>
       
       {/* ── Duplicate className FIXED here ── */}
       <div className="container responsive-2col" style={{ display:'grid', gridTemplateColumns:'220px 1fr', gap:28, alignItems:'start' }}>

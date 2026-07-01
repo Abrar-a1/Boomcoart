@@ -24,9 +24,9 @@ export default function ForgotPassword() {
 
   return (
     <div className="auth-page">
-      <Helmet><title>Forgot Password — Boomcoart</title></Helmet>
+      <Helmet><title>Forgot Password — Musaar</title></Helmet>
       <div className="auth-card">
-        <h1 className="auth-logo">Boomcoart</h1>
+        <h1 className="auth-logo">Musaar</h1>
         <p className="auth-subtitle">
           {sent ? 'Check your inbox!' : 'Enter your email to reset your password.'}
         </p>

@@ -20,9 +20,9 @@ export default function Register() {
 
   return (
     <div className="auth-page">
-      <Helmet><title>Create Account — Boomcoart</title></Helmet>
+      <Helmet><title>Create Account — Musaar</title></Helmet>
       <div className="auth-card">
-        <h1 className="auth-logo">Boomcoart</h1>
+        <h1 className="auth-logo">Musaar</h1>
         <p className="auth-subtitle">Create your free account today.</p>
         <form className="auth-form" onSubmit={handleSubmit}>
           {[

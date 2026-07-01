@@ -28,7 +28,7 @@ export default function Wishlist() {
 
   return (
     <div className="page">
-      <Helmet><title>My Wishlist — Boomcoart</title></Helmet>
+      <Helmet><title>My Wishlist — Musaar</title></Helmet>
       <div className="container">
         <h1 className="section-title" style={{ marginBottom: 28 }}>
           <FiHeart style={{ verticalAlign: 'middle', marginRight: 10, color: 'var(--red)' }} />

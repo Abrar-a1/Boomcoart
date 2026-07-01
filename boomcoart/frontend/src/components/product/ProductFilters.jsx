@@ -1,12 +1,24 @@
+import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 
-const CATEGORIES   = ['men','women','bridal','boys','girls','unisex'];
+const CATEGORIES   = ['men','women','bridal','kids'];
 const SUB_CATS     = ['shirts','pants','kurta','saree','lehenga','dress','jeans','jacket','suit','sherwani','tops','skirts','ethnic','western','accessories'];
 const PRICE_RANGES = [['Under ₹500','0','500'],['₹500–₹1500','500','1500'],['₹1500–₹3000','1500','3000'],['₹3000–₹8000','3000','8000'],['Above ₹8000','8000','']];
 const SORT_OPTIONS = [['Newest','-createdAt'],['Price: Low→High','price'],['Price: High→Low','-price'],['Top Rated','-ratings']];
 
 export default function ProductFilters({ onClose }) {
   const [params, setParams] = useSearchParams();
+  const [expanded, setExpanded] = useState({
+    category: true,
+    subCategory: true,
+    price: true,
+    sort: true
+  });
+
+  const toggleSection = (section) => {
+    setExpanded(prev => ({ ...prev, [section]: !prev[section] }));
+  };
 
   const set = (key, val) => {
     const next = new URLSearchParams(params);
@@ -19,139 +31,173 @@ export default function ProductFilters({ onClose }) {
   const active = (key, val) => params.get(key) === val;
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-[#E5D9C5]">
-        <h3 className="font-heading text-xl text-[#1E3A3A] font-bold">Filters</h3>
-        <button className="text-[11px] font-bold text-[#C25A3C] hover:text-[#a4462e] uppercase tracking-wider transition-colors" onClick={clearAll}>
+    <div>
+      {/* Header — box model */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '16px', marginBottom: '24px', borderBottom: '1px solid #E5D9C5' }}>
+        <h3 className="font-heading" style={{ fontSize: '20px', color: '#1E3A3A', fontWeight: 700, margin: 0 }}>Filters</h3>
+        <button style={{ fontSize: '11px', fontWeight: 700, color: '#C25A3C', textTransform: 'uppercase', letterSpacing: '0.08em', border: 'none', backgroundColor: 'transparent', cursor: 'pointer', transition: 'color 0.3s' }} onClick={clearAll}>
           Clear All
         </button>
       </div>
 
-      {/* Category */}
-      <div className="pb-6 border-b border-[#E5D9C5]">
-        <h4 className="text-[13px] font-bold text-[#1E3A3A] uppercase tracking-wider mb-4">Category</h4>
-        <div className="flex flex-col gap-3">
-          {CATEGORIES.map(c => (
-            <label key={c} className="flex items-center gap-3 cursor-pointer group">
-              <div className="relative flex items-center justify-center w-5 h-5 rounded border border-[#E5D9C5] bg-[#FDF7F0] group-hover:border-[#D4AF37] transition-colors">
-                <input
-                  type="checkbox"
-                  className="peer appearance-none absolute inset-0 w-full h-full cursor-pointer"
-                  checked={active('category', c)}
-                  onChange={() => set('category', active('category', c) ? '' : c)}
-                />
-                <div className="w-3 h-3 bg-[#1E3A3A] rounded-sm opacity-0 peer-checked:opacity-100 transition-opacity" />
-              </div>
-              <span className={`text-[14px] transition-colors ${active('category', c) ? 'font-bold text-[#1E3A3A]' : 'font-medium text-[#2C3E2F] group-hover:text-[#C25A3C]'}`}>
-                {c.charAt(0).toUpperCase() + c.slice(1)}
-              </span>
-            </label>
-          ))}
-        </div>
+      {/* ── Category Section ── */}
+      <div style={{ paddingBottom: '24px', marginBottom: '24px', borderBottom: '1px solid #E5D9C5' }}>
+        <button
+          onClick={() => toggleSection('category')}
+          style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', border: 'none', backgroundColor: 'transparent', cursor: 'pointer', padding: 0 }}
+        >
+          <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#1E3A3A', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>Category</h4>
+          <span style={{ color: '#9eaa9f' }}>{expanded.category ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}</span>
+        </button>
+        {expanded.category && (
+          <div className="animate-slide-down">
+            {CATEGORIES.map(c => (
+              <label key={c} className="group" style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', padding: '10px 0' }}>
+                <div style={{ position: 'relative', width: '20px', height: '20px', borderRadius: '4px', border: '1px solid #E5D9C5', backgroundColor: '#FDF7F0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'border-color 0.2s' }}>
+                  <input
+                    type="checkbox"
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', cursor: 'pointer', opacity: 0 }}
+                    checked={active('category', c)}
+                    onChange={() => set('category', active('category', c) ? '' : c)}
+                  />
+                  <div style={{ width: '12px', height: '12px', backgroundColor: '#1E3A3A', borderRadius: '2px', opacity: active('category', c) ? 1 : 0, transition: 'opacity 0.2s' }} />
+                </div>
+                <span style={{ fontSize: '14px', fontWeight: active('category', c) ? 700 : 500, color: active('category', c) ? '#1E3A3A' : '#2C3E2F', transition: 'color 0.2s' }}>
+                  {c.charAt(0).toUpperCase() + c.slice(1)}
+                </span>
+              </label>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Sub-category */}
-      <div className="pb-6 border-b border-[#E5D9C5]">
-        <h4 className="text-[13px] font-bold text-[#1E3A3A] uppercase tracking-wider mb-4">Product Type</h4>
-        <div className="grid grid-cols-2 gap-3">
-          {SUB_CATS.map(s => (
-            <label key={s} className="flex items-center gap-3 cursor-pointer group">
-              <div className="relative flex items-center justify-center w-5 h-5 rounded border border-[#E5D9C5] bg-[#FDF7F0] group-hover:border-[#D4AF37] transition-colors">
-                <input
-                  type="checkbox"
-                  className="peer appearance-none absolute inset-0 w-full h-full cursor-pointer"
-                  checked={active('subCategory', s)}
-                  onChange={() => set('subCategory', active('subCategory', s) ? '' : s)}
-                />
-                <div className="w-3 h-3 bg-[#1E3A3A] rounded-sm opacity-0 peer-checked:opacity-100 transition-opacity" />
-              </div>
-              <span className={`text-[13px] transition-colors ${active('subCategory', s) ? 'font-bold text-[#1E3A3A]' : 'font-medium text-[#6b7c6e] group-hover:text-[#1E3A3A]'}`}>
-                {s.charAt(0).toUpperCase() + s.slice(1)}
-              </span>
-            </label>
-          ))}
-        </div>
+      {/* ── Product Type Section ── */}
+      <div style={{ paddingBottom: '24px', marginBottom: '24px', borderBottom: '1px solid #E5D9C5' }}>
+        <button
+          onClick={() => toggleSection('subCategory')}
+          style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', border: 'none', backgroundColor: 'transparent', cursor: 'pointer', padding: 0 }}
+        >
+          <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#1E3A3A', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>Product Type</h4>
+          <span style={{ color: '#9eaa9f' }}>{expanded.subCategory ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}</span>
+        </button>
+        {expanded.subCategory && (
+          <div className="animate-slide-down" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0' }}>
+            {SUB_CATS.map(s => (
+              <label key={s} className="group" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '8px 0' }}>
+                <div style={{ position: 'relative', width: '16px', height: '16px', borderRadius: '3px', border: '1px solid #E5D9C5', backgroundColor: '#FDF7F0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <input
+                    type="checkbox"
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', cursor: 'pointer', opacity: 0 }}
+                    checked={active('subCategory', s)}
+                    onChange={() => set('subCategory', active('subCategory', s) ? '' : s)}
+                  />
+                  <div style={{ width: '10px', height: '10px', backgroundColor: '#1E3A3A', borderRadius: '2px', opacity: active('subCategory', s) ? 1 : 0, transition: 'opacity 0.2s' }} />
+                </div>
+                <span style={{ fontSize: '13px', fontWeight: active('subCategory', s) ? 700 : 500, color: active('subCategory', s) ? '#1E3A3A' : '#6b7c6e', transition: 'color 0.2s', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {s.charAt(0).toUpperCase() + s.slice(1)}
+                </span>
+              </label>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Price Range */}
-      <div className="pb-6 border-b border-[#E5D9C5]">
-        <h4 className="text-[13px] font-bold text-[#1E3A3A] uppercase tracking-wider mb-4">Price Range</h4>
-        <div className="flex flex-col gap-3">
-          {PRICE_RANGES.map(([label, min, max]) => {
-            const isActive = params.get('minPrice') === min && params.get('maxPrice') === max;
-            return (
-              <label key={label} className="flex items-center gap-3 cursor-pointer group">
-                <div className="relative flex items-center justify-center w-5 h-5 rounded-full border border-[#E5D9C5] bg-[#FDF7F0] group-hover:border-[#D4AF37] transition-colors">
+      {/* ── Price Range Section ── */}
+      <div style={{ paddingBottom: '24px', marginBottom: '24px', borderBottom: '1px solid #E5D9C5' }}>
+        <button
+          onClick={() => toggleSection('price')}
+          style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', border: 'none', backgroundColor: 'transparent', cursor: 'pointer', padding: 0 }}
+        >
+          <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#1E3A3A', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>Price Range</h4>
+          <span style={{ color: '#9eaa9f' }}>{expanded.price ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}</span>
+        </button>
+        {expanded.price && (
+          <div className="animate-slide-down">
+            {PRICE_RANGES.map(([label, min, max]) => {
+              const isActive = params.get('minPrice') === min && params.get('maxPrice') === max;
+              return (
+                <label key={label} className="group" style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', padding: '10px 0' }}>
+                  <div style={{ position: 'relative', width: '20px', height: '20px', borderRadius: '50%', border: '1px solid #E5D9C5', backgroundColor: '#FDF7F0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <input
+                      type="radio"
+                      name="priceRange"
+                      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', cursor: 'pointer', opacity: 0 }}
+                      checked={isActive}
+                      onChange={() => {
+                        const next = new URLSearchParams(params);
+                        if (isActive) { next.delete('minPrice'); next.delete('maxPrice'); }
+                        else { if (min) next.set('minPrice', min); else next.delete('minPrice'); if (max) next.set('maxPrice', max); else next.delete('maxPrice'); }
+                        next.delete('page'); setParams(next);
+                      }}
+                    />
+                    <div style={{ width: '10px', height: '10px', backgroundColor: '#1E3A3A', borderRadius: '50%', opacity: isActive ? 1 : 0, transition: 'opacity 0.2s' }} />
+                  </div>
+                  <span style={{ fontSize: '14px', fontWeight: isActive ? 700 : 500, color: isActive ? '#1E3A3A' : '#2C3E2F', transition: 'color 0.2s' }}>
+                    {label}
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* ── Sort Section ── */}
+      <div style={{ paddingBottom: '24px', marginBottom: '24px', borderBottom: '1px solid #E5D9C5' }}>
+        <button
+          onClick={() => toggleSection('sort')}
+          style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', border: 'none', backgroundColor: 'transparent', cursor: 'pointer', padding: 0 }}
+        >
+          <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#1E3A3A', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>Sort By</h4>
+          <span style={{ color: '#9eaa9f' }}>{expanded.sort ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}</span>
+        </button>
+        {expanded.sort && (
+          <div className="animate-slide-down">
+            {SORT_OPTIONS.map(([label, val]) => (
+              <label key={val} className="group" style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', padding: '10px 0' }}>
+                <div style={{ position: 'relative', width: '20px', height: '20px', borderRadius: '50%', border: '1px solid #E5D9C5', backgroundColor: '#FDF7F0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <input
                     type="radio"
-                    name="priceRange"
-                    className="peer appearance-none absolute inset-0 w-full h-full cursor-pointer"
-                    checked={isActive}
-                    onChange={() => {
-                      const next = new URLSearchParams(params);
-                      if (isActive) { next.delete('minPrice'); next.delete('maxPrice'); }
-                      else { if (min) next.set('minPrice', min); else next.delete('minPrice'); if (max) next.set('maxPrice', max); else next.delete('maxPrice'); }
-                      next.delete('page'); setParams(next);
-                    }}
+                    name="sortBy"
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', cursor: 'pointer', opacity: 0 }}
+                    checked={active('sort', val)}
+                    onChange={() => set('sort', active('sort', val) ? '' : val)}
                   />
-                  <div className="w-2.5 h-2.5 bg-[#1E3A3A] rounded-full opacity-0 peer-checked:opacity-100 transition-opacity" />
+                  <div style={{ width: '10px', height: '10px', backgroundColor: '#1E3A3A', borderRadius: '50%', opacity: active('sort', val) ? 1 : 0, transition: 'opacity 0.2s' }} />
                 </div>
-                <span className={`text-[14px] transition-colors ${isActive ? 'font-bold text-[#1E3A3A]' : 'font-medium text-[#2C3E2F] group-hover:text-[#C25A3C]'}`}>
+                <span style={{ fontSize: '14px', fontWeight: active('sort', val) ? 700 : 500, color: active('sort', val) ? '#1E3A3A' : '#2C3E2F', transition: 'color 0.2s' }}>
                   {label}
                 </span>
               </label>
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Sort */}
-      <div className="pb-6 border-b border-[#E5D9C5]">
-        <h4 className="text-[13px] font-bold text-[#1E3A3A] uppercase tracking-wider mb-4">Sort By</h4>
-        <div className="flex flex-col gap-3">
-          {SORT_OPTIONS.map(([label, val]) => (
-            <label key={val} className="flex items-center gap-3 cursor-pointer group">
-              <div className="relative flex items-center justify-center w-5 h-5 rounded-full border border-[#E5D9C5] bg-[#FDF7F0] group-hover:border-[#D4AF37] transition-colors">
-                <input
-                  type="radio"
-                  name="sortBy"
-                  className="peer appearance-none absolute inset-0 w-full h-full cursor-pointer"
-                  checked={active('sort', val)}
-                  onChange={() => set('sort', active('sort', val) ? '' : val)}
-                />
-                <div className="w-2.5 h-2.5 bg-[#1E3A3A] rounded-full opacity-0 peer-checked:opacity-100 transition-opacity" />
-              </div>
-              <span className={`text-[14px] transition-colors ${active('sort', val) ? 'font-bold text-[#1E3A3A]' : 'font-medium text-[#2C3E2F] group-hover:text-[#C25A3C]'}`}>
-                {label}
-              </span>
-            </label>
-          ))}
-        </div>
+      {/* Featured Items Only — box model */}
+      <div style={{ marginBottom: '24px' }}>
+        <label className="group" style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', padding: '14px 16px', borderRadius: '12px', border: '1px solid #E5D9C5', backgroundColor: '#FDF7F0', boxShadow: '0 1px 4px rgba(0,0,0,0.03)', transition: 'border-color 0.3s' }}>
+          <div style={{ position: 'relative', width: '20px', height: '20px', borderRadius: '4px', border: '1px solid #E5D9C5', backgroundColor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <input
+              type="checkbox"
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', cursor: 'pointer', opacity: 0 }}
+              checked={params.get('isFeatured') === 'true'}
+              onChange={() => set('isFeatured', params.get('isFeatured') === 'true' ? '' : 'true')}
+            />
+            <div style={{ width: '12px', height: '12px', backgroundColor: '#D4AF37', borderRadius: '2px', opacity: params.get('isFeatured') === 'true' ? 1 : 0, transition: 'opacity 0.2s' }} />
+          </div>
+          <span style={{ fontSize: '14px', fontWeight: params.get('isFeatured') === 'true' ? 700 : 500, color: '#1E3A3A', flex: 1 }}>
+            Show Featured Only
+          </span>
+          <span style={{ fontSize: '18px', color: '#D4AF37' }}>⭐</span>
+        </label>
       </div>
-
-      {/* Featured Items Only */}
-      <label className="flex items-center gap-3 cursor-pointer group p-3 rounded-lg border border-[#E5D9C5] bg-[#FDF7F0] hover:border-[#D4AF37] transition-all">
-        <div className="relative flex items-center justify-center w-5 h-5 rounded border border-[#E5D9C5] group-hover:border-[#D4AF37] bg-white transition-colors">
-          <input
-            type="checkbox"
-            className="peer appearance-none absolute inset-0 w-full h-full cursor-pointer"
-            checked={params.get('isFeatured') === 'true'}
-            onChange={() => set('isFeatured', params.get('isFeatured') === 'true' ? '' : 'true')}
-          />
-          <div className="w-3 h-3 bg-[#D4AF37] rounded-sm opacity-0 peer-checked:opacity-100 transition-opacity" />
-        </div>
-        <span className={`text-[14px] transition-colors ${params.get('isFeatured') === 'true' ? 'font-bold text-[#1E3A3A]' : 'font-medium text-[#1E3A3A]'}`}>
-          Show Featured Only
-        </span>
-        <span className="ml-auto text-lg text-[#D4AF37]">⭐</span>
-      </label>
       
-      {/* Mobile close button (only visible on mobile layout in home page) */}
-      <div className="lg:hidden w-full pt-4">
+      {/* Mobile close button */}
+      <div className="lg:hidden" style={{ paddingTop: '16px', paddingBottom: '24px' }}>
         <button 
           onClick={() => onClose?.()}
-          className="w-full min-h-[44px] bg-[#1E3A3A] text-white font-bold uppercase tracking-widest text-[13px] rounded-full shadow-lg"
+          style={{ width: '100%', minHeight: '48px', backgroundColor: '#1E3A3A', color: '#fff', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '13px', borderRadius: '999px', border: 'none', cursor: 'pointer', boxShadow: '0 4px 12px rgba(30,58,58,0.2)', transition: 'background-color 0.3s' }}
         >
           View Results
         </button>

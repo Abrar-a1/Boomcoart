@@ -19,9 +19,9 @@ export default function Login() {
 
   return (
     <div className="auth-page">
-      <Helmet><title>Login — Boomcoart</title></Helmet>
+      <Helmet><title>Login — Musaar</title></Helmet>
       <div className="auth-card">
-        <h1 className="auth-logo">Boomcoart</h1>
+        <h1 className="auth-logo">Musaar</h1>
         <p className="auth-subtitle">Welcome back! Sign in to continue.</p>
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">

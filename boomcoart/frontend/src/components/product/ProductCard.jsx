@@ -34,39 +34,41 @@ export default function ProductCard({ product }) {
   };
 
   return (
-    <Link to={`/product/${product._id}`} className="group block bg-white rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden border border-[#E5D9C5]">
+    <Link to={`/product/${product._id}`} className="group" style={{ display: 'block', backgroundColor: '#fff', borderRadius: '12px', overflow: 'hidden', border: '1px solid #E5D9C5', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', transition: 'all 0.3s ease' }}>
       {/* Image */}
       <div
-        className="relative aspect-[4/5] overflow-hidden bg-[#FDF7F0]"
+        style={{ position: 'relative', aspectRatio: '4/5', overflow: 'hidden', backgroundColor: '#FDF7F0' }}
         onMouseEnter={() => setHoverImg(true)}
         onMouseLeave={() => setHoverImg(false)}
       >
         <img
           src={(hoverImg && product.images[1]?.url) ? product.images[1].url : product.images[0]?.url}
           alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="group-hover:scale-105"
+          style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
           loading="lazy"
         />
         {/* Discount badge */}
         {discount > 0 && (
-          <span className="absolute top-2.5 left-2.5 bg-[#C25A3C] text-white text-[11px] font-bold px-2.5 py-1 rounded-full">
+          <span style={{ position: 'absolute', top: '10px', left: '10px', backgroundColor: '#C25A3C', color: '#fff', fontSize: '11px', fontWeight: 700, padding: '4px 10px', borderRadius: '999px' }}>
             {discount}% OFF
           </span>
         )}
         {/* Out of stock overlay */}
         {product.stock === 0 && (
-          <div className="absolute inset-0 bg-black/45 flex items-center justify-center">
-            <span className="text-white font-bold text-sm tracking-wide">Out of Stock</span>
+          <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ color: '#fff', fontWeight: 700, fontSize: '14px', letterSpacing: '0.05em' }}>Out of Stock</span>
           </div>
         )}
         {/* Wishlist button */}
-        <div className="absolute top-2.5 right-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="opacity-0 group-hover:opacity-100" style={{ position: 'absolute', top: '10px', right: '10px', transition: 'opacity 0.3s ease' }}>
           <button
-            className={`w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition-colors ${
-              wishlisted
-                ? 'bg-[#fde8e4] text-[#B85C4B]'
-                : 'bg-white text-[#2C3E2F] hover:bg-[#1E3A3A] hover:text-white'
-            }`}
+            style={{
+              width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              border: 'none', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', transition: 'all 0.2s ease',
+              backgroundColor: wishlisted ? '#fde8e4' : '#fff',
+              color: wishlisted ? '#B85C4B' : '#2C3E2F',
+            }}
             onClick={handleWishlist}
             title="Wishlist"
           >
@@ -75,32 +77,54 @@ export default function ProductCard({ product }) {
         </div>
       </div>
 
-      {/* Info */}
-      {/* Info */}
-      <div className="p-4 sm:p-5 flex flex-col h-[180px]">
-        <p className="text-[10px] uppercase tracking-widest text-[#9eaa9f] mb-1.5 font-semibold">
+      {/* Info — box model: each element has explicit margin, no flex gap */}
+      <div style={{ padding: '16px 16px 20px 16px' }}>
+        {/* Category label */}
+        <p style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#9eaa9f', fontWeight: 600, marginBottom: '8px' }}>
           {product.category} · {product.subCategory}
         </p>
-        <h3 className="font-heading text-lg font-bold text-[#1E3A3A] leading-snug line-clamp-2 mb-2 group-hover:text-[#C25A3C] transition-colors">
+
+        {/* Product name */}
+        <h3 className="font-heading line-clamp-2 group-hover:text-[#C25A3C]" style={{ fontSize: '17px', fontWeight: 700, color: '#1E3A3A', lineHeight: 1.35, marginBottom: '8px', transition: 'color 0.3s ease' }}>
           {product.name}
         </h3>
-        {product.ratings > 0 && (
-          <div className="flex items-center gap-1 text-xs text-[#D4AF37] mb-2.5">
-            <FiStar size={12} fill="currentColor" />
-            <span className="font-bold">{product.ratings}</span>
-            <span className="text-[#9eaa9f] font-medium">({product.numReviews})</span>
+
+        {/* Star ratings */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+            {[1,2,3,4,5].map(star => (
+              <FiStar
+                key={star}
+                size={12}
+                style={{ color: star <= Math.round(product.ratings || 0) ? '#D4AF37' : '#E5D9C5' }}
+                fill={star <= Math.round(product.ratings || 0) ? 'currentColor' : 'none'}
+              />
+            ))}
           </div>
-        )}
-        <div className="mt-auto flex items-center justify-between gap-2 mb-4">
-          <span className="text-xl font-bold text-[#C25A3C]">₹{price.toLocaleString()}</span>
-          {discount > 0 && <span className="text-sm font-medium text-[#9eaa9f] line-through">₹{product.price.toLocaleString()}</span>}
+          {product.numReviews > 0 && (
+            <span style={{ fontSize: '11px', color: '#9eaa9f', fontWeight: 500 }}>({product.numReviews})</span>
+          )}
         </div>
+
+        {/* Price */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+          <span style={{ fontSize: '20px', fontWeight: 700, color: '#C25A3C' }}>₹{price.toLocaleString()}</span>
+          {discount > 0 && <span style={{ fontSize: '14px', fontWeight: 500, color: '#9eaa9f', textDecoration: 'line-through' }}>₹{product.price.toLocaleString()}</span>}
+        </div>
+
+        {/* Add to Cart button */}
         <button
-          className="w-full min-h-[44px] bg-[#C25A3C] text-white text-[13px] font-bold uppercase tracking-wide rounded-full flex items-center justify-center gap-2 hover:bg-[#1E3A3A] transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+          style={{
+            width: '100%', minHeight: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+            backgroundColor: '#C25A3C', color: '#fff', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em',
+            borderRadius: '999px', border: 'none', cursor: 'pointer', boxShadow: '0 2px 8px rgba(194,90,60,0.2)', transition: 'all 0.3s ease',
+            opacity: product.stock === 0 ? 0.4 : 1,
+          }}
+          className="hover:bg-[#1E3A3A] hover:shadow-md"
           onClick={handleAddToCart}
           disabled={product.stock === 0}
         >
-          <FiShoppingCart size={16} />
+          <FiShoppingCart size={14} />
           {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
         </button>
       </div>

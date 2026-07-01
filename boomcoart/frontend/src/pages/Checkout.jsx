@@ -64,7 +64,7 @@ export default function Checkout() {
         const options = {
           key: import.meta.env.VITE_RAZORPAY_KEY_ID,
           amount: rpOrder.amount, currency: rpOrder.currency,
-          name: 'Boomcoart', description: 'Fashion Purchase',
+          name: 'Musaar', description: 'Fashion Purchase',
           order_id: rpOrder.id,
           handler: async (response) => {
             try {
@@ -94,7 +94,7 @@ export default function Checkout() {
 
   return (
     <div className="page">
-      <Helmet><title>Checkout — Boomcoart</title></Helmet>
+      <Helmet><title>Checkout — Musaar</title></Helmet>
       <div className="container" style={{ maxWidth: 860 }}>
         <h1 className="section-title" style={{ marginBottom: 28 }}>Checkout</h1>
 

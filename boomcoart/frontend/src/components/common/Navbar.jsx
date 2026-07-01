@@ -47,27 +47,39 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 shadow-sm" style={{ backgroundColor: '#1E3A3A' }}>
-      <div className="max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="flex items-center justify-between h-20">
+    <header style={{ position: 'sticky', top: 0, zIndex: 50, backgroundColor: '#1E3A3A', boxShadow: '0 1px 4px rgba(0,0,0,0.1)', marginBottom: '24px' }}>
+      {/* Container — constrained max-width, centered */}
+      <div style={{ maxWidth: '1100px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px' }}>
+        {/* Main row — flexbox with items vertically centered */}
+        <div style={{ display: 'flex', alignItems: 'center', height: '72px' }}>
           
           {/* ── Left: Logo ── */}
-          <div className="flex justify-start">
-            <Link to="/" className="font-heading text-2xl lg:text-3xl font-bold tracking-tight transition-colors" 
-              style={{ color: '#ffffff' }}
+          <div style={{ flexShrink: 0 }}>
+            <Link to="/" className="font-heading" 
+              style={{ fontSize: '28px', fontWeight: 700, letterSpacing: '-0.02em', color: '#ffffff', transition: 'color 0.3s ease' }}
               onMouseEnter={e => { e.currentTarget.style.color = '#D4AF37'; }}
               onMouseLeave={e => { e.currentTarget.style.color = '#ffffff'; }}
             >
-              Boomcoart
+              Musaar
             </Link>
           </div>
 
-          {/* ── Center: Navigation ── */}
-          <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 justify-center items-center gap-6 lg:gap-8">
+          {/* ── Center: Navigation — box model: each link has its own padding ── */}
+          <nav className="hidden md:flex" style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             {NAV_LINKS.map(([label, href]) => (
               <Link key={label} to={href}
-                className="text-sm font-semibold tracking-[0.05em] uppercase transition-colors"
-                style={{ color: 'rgba(255,255,255,0.85)' }}
+                style={{ 
+                  display: 'inline-block',
+                  padding: '8px 16px',
+                  margin: '0 4px',
+                  fontSize: '13px', 
+                  fontWeight: 600, 
+                  letterSpacing: '0.06em', 
+                  textTransform: 'uppercase', 
+                  color: 'rgba(255,255,255,0.85)',
+                  whiteSpace: 'nowrap',
+                  transition: 'color 0.3s ease',
+                }}
                 onMouseEnter={e => { e.currentTarget.style.color = '#D4AF37'; }}
                 onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.85)'; }}
               >
@@ -76,37 +88,34 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* ── Right: Actions ── */}
-          <div className="flex justify-end items-center gap-4 sm:gap-5">
+          {/* ── Right: Actions — box model: each icon has its own margin ── */}
+          <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}>
             
-            {/* Search Toggle */}
-            <div className="relative">
+            {/* Search — single button, no duplicates */}
+            <div style={{ position: 'relative', marginRight: '16px' }}>
               {!searchOpen ? (
                 <button 
                   onClick={() => setSearchOpen(true)}
-                  className="w-10 h-10 flex items-center justify-center rounded-full transition-colors"
-                  style={{ color: 'rgba(255,255,255,0.85)' }}
-                  onMouseEnter={e => { e.currentTarget.style.color = '#D4AF37'; }}
-                  onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.85)'; }}
+                  style={{ alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '999px', fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.7)', border: '1px solid rgba(255,255,255,0.15)', backgroundColor: 'transparent', cursor: 'pointer', transition: 'all 0.3s ease', display: 'inline-flex' }}
                   aria-label="Search"
                 >
-                  <FiSearch size={22} />
+                  <FiSearch size={16} />
+                  <span className="hidden sm:inline">Search...</span>
                 </button>
               ) : (
-                <form onSubmit={handleSearch} className="absolute right-0 top-1/2 -translate-y-1/2 w-[240px] sm:w-[300px] flex items-center bg-white rounded-full overflow-hidden shadow-lg animate-fade-in" style={{ border: '2px solid #D4AF37' }}>
+                <form onSubmit={handleSearch} className="animate-fade-in" style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', width: '320px', display: 'flex', alignItems: 'center', backgroundColor: '#fff', borderRadius: '999px', overflow: 'hidden', boxShadow: '0 8px 24px rgba(0,0,0,0.15)', border: '2px solid #D4AF37' }}>
                   <input
                     autoFocus
                     type="text"
-                    placeholder="Search premium fashion..."
+                    placeholder="Search products..."
                     value={query}
                     onChange={e => setQuery(e.target.value)}
-                    className="flex-1 px-4 py-2.5 text-sm outline-none"
-                    style={{ color: '#2C3E2F' }}
+                    style={{ flex: 1, padding: '10px 20px', fontSize: '14px', outline: 'none', border: 'none', color: '#2C3E2F' }}
                   />
-                  <button type="submit" className="px-4 py-2.5 bg-[#FDF7F0] hover:bg-[#E5D9C5] transition-colors text-[#1E3A3A]">
+                  <button type="submit" style={{ padding: '10px 16px', backgroundColor: '#FDF7F0', border: 'none', cursor: 'pointer', color: '#1E3A3A', transition: 'background-color 0.3s' }}>
                     <FiSearch size={18} />
                   </button>
-                  <button type="button" onClick={() => setSearchOpen(false)} className="px-3 hover:text-[#C25A3C] transition-colors text-[#2C3E2F]">
+                  <button type="button" onClick={() => setSearchOpen(false)} style={{ padding: '10px 12px', border: 'none', backgroundColor: 'transparent', cursor: 'pointer', color: '#2C3E2F', transition: 'color 0.3s' }}>
                     <FiX size={18} />
                   </button>
                 </form>
@@ -115,8 +124,8 @@ export default function Navbar() {
 
             {/* Wishlist */}
             {user && (
-              <Link to="/wishlist" className="w-10 h-10 hidden sm:flex items-center justify-center rounded-full transition-colors"
-                style={{ color: 'rgba(255,255,255,0.85)' }}
+              <Link to="/wishlist" className="hidden sm:flex"
+                style={{ width: '40px', height: '40px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', color: 'rgba(255,255,255,0.85)', marginRight: '12px', transition: 'color 0.3s ease' }}
                 onMouseEnter={e => { e.currentTarget.style.color = '#D4AF37'; }}
                 onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.85)'; }}
                 aria-label="Wishlist"
@@ -126,16 +135,15 @@ export default function Navbar() {
             )}
 
             {/* Cart */}
-            <Link to="/cart" className="relative w-10 h-10 flex items-center justify-center rounded-full transition-colors"
-               style={{ color: 'rgba(255,255,255,0.85)' }}
-               onMouseEnter={e => { e.currentTarget.style.color = '#D4AF37'; }}
-               onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.85)'; }}
-               aria-label="Cart"
-             >
+            <Link to="/cart" 
+              style={{ position: 'relative', width: '40px', height: '40px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', color: 'rgba(255,255,255,0.85)', marginRight: '12px', transition: 'color 0.3s ease' }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#D4AF37'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.85)'; }}
+              aria-label="Cart"
+            >
               <FiShoppingCart size={22} />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[20px] h-[20px] flex items-center justify-center rounded-full text-[11px] font-bold px-1.5 shadow-sm"
-                  style={{ backgroundColor: '#C25A3C', color: '#ffffff' }}>
+                <span style={{ position: 'absolute', top: '-4px', right: '-4px', minWidth: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', fontSize: '11px', fontWeight: 700, padding: '0 6px', backgroundColor: '#C25A3C', color: '#fff', boxShadow: '0 2px 4px rgba(0,0,0,0.15)' }}>
                   {cartCount}
                 </span>
               )}
@@ -143,37 +151,35 @@ export default function Navbar() {
 
             {/* User Account / Login */}
             {user ? (
-              <div className="relative hidden sm:block" ref={dropRef}>
+              <div style={{ position: 'relative' }} className="hidden sm:block" ref={dropRef}>
                 <button onClick={() => setDropOpen(!dropOpen)}
-                  className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors shadow-sm"
-                  style={{ backgroundColor: '#D4AF37', color: '#1E3A3A' }}
+                  style={{ width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '14px', backgroundColor: '#D4AF37', color: '#1E3A3A', border: 'none', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', transition: 'transform 0.2s' }}
                   aria-label="Account"
                 >
                   {user.name?.[0]?.toUpperCase()}
                 </button>
                 {dropOpen && (
-                  <div className="absolute right-0 top-full mt-4 w-60 bg-white rounded-xl shadow-2xl overflow-hidden animate-slide-down z-50 border border-[#E5D9C5]">
-                    <div className="px-5 py-4" style={{ backgroundColor: '#FDF7F0', borderBottom: '1px solid #E5D9C5' }}>
-                      <p className="font-semibold text-sm" style={{ color: '#1E3A3A' }}>{user.name}</p>
-                      <p className="text-xs mt-1" style={{ color: '#6b7c6e' }}>{user.email}</p>
+                  <div className="animate-slide-down" style={{ position: 'absolute', right: 0, top: '100%', marginTop: '16px', width: '240px', backgroundColor: '#fff', borderRadius: '12px', boxShadow: '0 8px 32px rgba(0,0,0,0.12)', overflow: 'hidden', zIndex: 50, border: '1px solid #E5D9C5' }}>
+                    <div style={{ padding: '16px 20px', backgroundColor: '#FDF7F0', borderBottom: '1px solid #E5D9C5' }}>
+                      <p style={{ fontWeight: 600, fontSize: '14px', color: '#1E3A3A', marginBottom: '4px' }}>{user.name}</p>
+                      <p style={{ fontSize: '12px', color: '#6b7c6e', margin: 0 }}>{user.email}</p>
                     </div>
-                    <div className="py-2">
-                      <Link to="/profile" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium transition-colors hover:bg-[#FDF7F0]" style={{ color: '#2C3E2F' }} onClick={() => setDropOpen(false)}>
+                    <div style={{ padding: '8px 0' }}>
+                      <Link to="/profile" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 20px', fontSize: '14px', fontWeight: 500, color: '#2C3E2F', transition: 'background-color 0.2s' }} onClick={() => setDropOpen(false)} className="hover:bg-[#FDF7F0]">
                         <FiUser size={16}/> My Profile
                       </Link>
-                      <Link to="/profile?tab=orders" className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium transition-colors hover:bg-[#FDF7F0]" style={{ color: '#2C3E2F' }} onClick={() => setDropOpen(false)}>
+                      <Link to="/profile?tab=orders" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 20px', fontSize: '14px', fontWeight: 500, color: '#2C3E2F', transition: 'background-color 0.2s' }} onClick={() => setDropOpen(false)} className="hover:bg-[#FDF7F0]">
                         <FiPackage size={16}/> My Orders
                       </Link>
                       {isAdmin && (
-                        <Link to="/admin" className="flex items-center gap-3 px-5 py-2.5 text-sm font-bold transition-colors hover:bg-[#FDF7F0]" style={{ color: '#D4AF37' }} onClick={() => setDropOpen(false)}>
+                        <Link to="/admin" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 20px', fontSize: '14px', fontWeight: 700, color: '#D4AF37', transition: 'background-color 0.2s' }} onClick={() => setDropOpen(false)} className="hover:bg-[#FDF7F0]">
                           <FiShield size={16}/> Admin Panel
                         </Link>
                       )}
                     </div>
-                    <div className="border-t border-[#E5D9C5] py-2">
-                      <button className="w-full flex items-center gap-3 px-5 py-2.5 text-sm font-medium transition-colors hover:bg-[#fde8e4]"
-                        style={{ color: '#C25A3C' }}
-                        onClick={() => { logout(); setDropOpen(false); navigate('/'); }}>
+                    <div style={{ borderTop: '1px solid #E5D9C5', padding: '8px 0' }}>
+                      <button style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 20px', fontSize: '14px', fontWeight: 500, color: '#C25A3C', border: 'none', backgroundColor: 'transparent', cursor: 'pointer', transition: 'background-color 0.2s' }}
+                        onClick={() => { logout(); setDropOpen(false); navigate('/'); }} className="hover:bg-[#fde8e4]">
                         <FiLogOut size={16}/> Logout
                       </button>
                     </div>
@@ -181,16 +187,18 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              <Link to="/login" className="hidden sm:inline-flex justify-center items-center px-6 py-2.5 ml-3 lg:ml-6 min-h-[44px] text-[15px] font-bold rounded-full transition-all hover:bg-white hover:shadow-lg"
-                style={{ backgroundColor: '#D4AF37', color: '#1E3A3A' }}
+              <Link to="/login" className="hidden sm:inline-flex"
+                style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center', padding: '10px 24px', marginLeft: '8px', minHeight: '40px', fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', borderRadius: '999px', border: '1.5px solid #D4AF37', color: '#D4AF37', backgroundColor: 'transparent', transition: 'all 0.3s ease' }}
+                onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#D4AF37'; e.currentTarget.style.color = '#1E3A3A'; }}
+                onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#D4AF37'; }}
               >
                 Login
               </Link>
             )}
 
             {/* Mobile Menu Toggle */}
-            <button className="md:hidden w-10 h-10 flex items-center justify-center transition-colors" 
-              style={{ color: 'rgba(255,255,255,0.85)' }}
+            <button className="md:hidden"
+              style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: '8px', border: 'none', backgroundColor: 'transparent', color: 'rgba(255,255,255,0.85)', cursor: 'pointer', transition: 'color 0.3s' }}
               onMouseEnter={e => { e.currentTarget.style.color = '#D4AF37'; }}
               onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.85)'; }}
               onClick={() => setMenuOpen(true)} aria-label="Menu"
@@ -205,60 +213,69 @@ export default function Navbar() {
       {/* ── Mobile Drawer ── */}
       {menuOpen && (
         <>
-          <div className="fixed inset-0 z-[200] transition-opacity" style={{ backgroundColor: 'rgba(30, 58, 58, 0.6)', backdropFilter: 'blur(4px)' }} onClick={() => setMenuOpen(false)} />
-          <div className="fixed top-0 right-0 bottom-0 w-[320px] max-w-[85vw] bg-[#FDF7F0] z-[201] shadow-2xl flex flex-col animate-slide-in">
-            <div className="flex items-center justify-between px-6 py-5" style={{ backgroundColor: '#1E3A3A' }}>
-              <span className="font-heading text-2xl font-bold tracking-tight" style={{ color: '#ffffff' }}>Menu</span>
+          <div style={{ position: 'fixed', inset: 0, zIndex: 200, backgroundColor: 'rgba(30,58,58,0.6)', backdropFilter: 'blur(4px)', transition: 'opacity 0.3s' }} onClick={() => setMenuOpen(false)} />
+          <div className="animate-slide-in" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: '320px', maxWidth: '85vw', backgroundColor: '#FDF7F0', zIndex: 201, boxShadow: '-8px 0 32px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column' }}>
+            {/* Drawer header */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px', backgroundColor: '#1E3A3A' }}>
+              <span className="font-heading" style={{ fontSize: '24px', fontWeight: 700, letterSpacing: '-0.02em', color: '#fff' }}>Menu</span>
               <button onClick={() => setMenuOpen(false)}
-                className="w-10 h-10 flex items-center justify-center rounded-full transition-colors hover:bg-white/10 text-white" aria-label="Close"
+                style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', border: 'none', backgroundColor: 'rgba(255,255,255,0.1)', color: '#fff', cursor: 'pointer', transition: 'background-color 0.2s' }} aria-label="Close"
               >
                 <FiX size={22} />
               </button>
             </div>
 
-            <div className="p-6 flex-1 overflow-y-auto">
-              <form onSubmit={handleSearch} className="flex rounded-full overflow-hidden shadow-sm mb-8" style={{ border: '1px solid #E5D9C5', backgroundColor: '#ffffff' }}>
-                <input type="text" placeholder="Search premium fashion..." value={query} onChange={e => setQuery(e.target.value)}
-                  className="flex-1 px-5 py-3 text-sm bg-transparent outline-none" style={{ color: '#2C3E2F' }} />
-                <button type="submit" className="px-5 text-white transition-colors hover:opacity-90" style={{ backgroundColor: '#1E3A3A' }}><FiSearch size={18}/></button>
+            {/* Drawer content — box model: each item has its own padding/margin */}
+            <div style={{ padding: '24px', flex: 1, overflowY: 'auto' }}>
+              {/* Search */}
+              <form onSubmit={handleSearch} style={{ display: 'flex', borderRadius: '999px', overflow: 'hidden', border: '1px solid #E5D9C5', backgroundColor: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', marginBottom: '32px' }}>
+                <input type="text" placeholder="Search products..." value={query} onChange={e => setQuery(e.target.value)}
+                  style={{ flex: 1, padding: '12px 20px', fontSize: '14px', backgroundColor: 'transparent', outline: 'none', border: 'none', color: '#2C3E2F' }} />
+                <button type="submit" style={{ padding: '12px 20px', color: '#fff', backgroundColor: '#1E3A3A', border: 'none', cursor: 'pointer', transition: 'opacity 0.3s' }}><FiSearch size={18}/></button>
               </form>
 
-              <div className="flex flex-col gap-2 mb-8">
-                <span className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#9eaa9f' }}>Categories</span>
+              {/* Categories */}
+              <div style={{ marginBottom: '32px' }}>
+                <span style={{ display: 'block', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#9eaa9f', marginBottom: '12px' }}>Categories</span>
                 {NAV_LINKS.map(([label, href]) => (
-                  <Link key={label} to={href} className="flex items-center px-4 py-3.5 text-base font-semibold rounded-xl transition-colors hover:bg-white hover:shadow-sm"
-                    style={{ color: '#1E3A3A' }} onClick={() => setMenuOpen(false)}>
+                  <Link key={label} to={href} 
+                    style={{ display: 'block', padding: '12px 16px', marginBottom: '4px', fontSize: '15px', fontWeight: 600, color: '#1E3A3A', borderRadius: '12px', transition: 'background-color 0.2s' }} 
+                    className="hover:bg-white hover:shadow-sm"
+                    onClick={() => setMenuOpen(false)}
+                  >
                     {label}
                   </Link>
                 ))}
               </div>
 
-              <div className="flex flex-col gap-2 pt-6" style={{ borderTop: '1px solid #E5D9C5' }}>
-                <span className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#9eaa9f' }}>Account</span>
-                <Link to="/cart" className="flex items-center gap-4 px-4 py-3.5 text-base font-medium rounded-xl transition-colors hover:bg-white hover:shadow-sm"
-                  style={{ color: '#2C3E2F' }} onClick={() => setMenuOpen(false)}>
-                  <div className="relative">
+              {/* Account links */}
+              <div style={{ paddingTop: '24px', borderTop: '1px solid #E5D9C5' }}>
+                <span style={{ display: 'block', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#9eaa9f', marginBottom: '12px' }}>Account</span>
+                <Link to="/cart" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '12px 16px', marginBottom: '4px', fontSize: '15px', fontWeight: 500, color: '#2C3E2F', borderRadius: '12px', transition: 'background-color 0.2s' }} className="hover:bg-white hover:shadow-sm" onClick={() => setMenuOpen(false)}>
+                  <div style={{ position: 'relative' }}>
                     <FiShoppingCart size={20}/>
-                    {cartCount > 0 && <span className="absolute -top-1.5 -right-2 bg-[#C25A3C] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">{cartCount}</span>}
+                    {cartCount > 0 && <span style={{ position: 'absolute', top: '-6px', right: '-8px', backgroundColor: '#C25A3C', color: '#fff', fontSize: '10px', fontWeight: 700, width: '16px', height: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%' }}>{cartCount}</span>}
                   </div>
                   Shopping Cart
                 </Link>
-                {user && <Link to="/wishlist" className="flex items-center gap-4 px-4 py-3.5 text-base font-medium rounded-xl transition-colors hover:bg-white hover:shadow-sm" style={{ color: '#2C3E2F' }} onClick={() => setMenuOpen(false)}><FiHeart size={20}/> Wishlist</Link>}
-                {user && <Link to="/profile" className="flex items-center gap-4 px-4 py-3.5 text-base font-medium rounded-xl transition-colors hover:bg-white hover:shadow-sm" style={{ color: '#2C3E2F' }} onClick={() => setMenuOpen(false)}><FiUser size={20}/> My Profile</Link>}
-                {isAdmin && <Link to="/admin" className="flex items-center gap-4 px-4 py-3.5 text-base font-bold rounded-xl transition-colors hover:bg-white hover:shadow-sm" style={{ color: '#D4AF37' }} onClick={() => setMenuOpen(false)}><FiShield size={20}/> Admin Panel</Link>}
+                {user && <Link to="/wishlist" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '12px 16px', marginBottom: '4px', fontSize: '15px', fontWeight: 500, color: '#2C3E2F', borderRadius: '12px', transition: 'background-color 0.2s' }} className="hover:bg-white hover:shadow-sm" onClick={() => setMenuOpen(false)}><FiHeart size={20}/> Wishlist</Link>}
+                {user && <Link to="/profile" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '12px 16px', marginBottom: '4px', fontSize: '15px', fontWeight: 500, color: '#2C3E2F', borderRadius: '12px', transition: 'background-color 0.2s' }} className="hover:bg-white hover:shadow-sm" onClick={() => setMenuOpen(false)}><FiUser size={20}/> My Profile</Link>}
+                {isAdmin && <Link to="/admin" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '12px 16px', marginBottom: '4px', fontSize: '15px', fontWeight: 700, color: '#D4AF37', borderRadius: '12px', transition: 'background-color 0.2s' }} className="hover:bg-white hover:shadow-sm" onClick={() => setMenuOpen(false)}><FiShield size={20}/> Admin Panel</Link>}
               </div>
             </div>
 
-            <div className="p-6 bg-white" style={{ borderTop: '1px solid #E5D9C5' }}>
+            {/* Drawer footer */}
+            <div style={{ padding: '24px', backgroundColor: '#fff', borderTop: '1px solid #E5D9C5' }}>
               {user ? (
-                <button className="w-full flex items-center justify-center gap-2 px-6 py-3.5 text-sm rounded-full font-bold transition-colors shadow-sm hover:shadow-md"
-                  style={{ backgroundColor: '#C25A3C', color: '#ffffff' }}
+                <button 
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '14px 24px', fontSize: '14px', fontWeight: 700, borderRadius: '999px', border: 'none', cursor: 'pointer', backgroundColor: '#C25A3C', color: '#fff', boxShadow: '0 4px 12px rgba(194,90,60,0.3)', transition: 'all 0.3s' }}
                   onClick={() => { logout(); setMenuOpen(false); navigate('/'); }}>
                   <FiLogOut size={18}/> Sign Out
                 </button>
               ) : (
-                <Link to="/login" className="w-full flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-bold rounded-full transition-colors shadow-sm hover:shadow-md"
-                  style={{ backgroundColor: '#D4AF37', color: '#1E3A3A' }} onClick={() => setMenuOpen(false)}>
+                <Link to="/login" 
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '14px 24px', fontSize: '14px', fontWeight: 700, borderRadius: '999px', backgroundColor: '#D4AF37', color: '#1E3A3A', boxShadow: '0 4px 12px rgba(212,175,55,0.3)', transition: 'all 0.3s' }} 
+                  onClick={() => setMenuOpen(false)}>
                   <FiUser size={18}/> Login / Register
                 </Link>
               )}

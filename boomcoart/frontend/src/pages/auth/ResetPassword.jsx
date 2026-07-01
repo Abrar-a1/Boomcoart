@@ -30,9 +30,9 @@ export default function ResetPassword() {
 
   return (
     <div className="auth-page">
-      <Helmet><title>Reset Password — Boomcoart</title></Helmet>
+      <Helmet><title>Reset Password — Musaar</title></Helmet>
       <div className="auth-card">
-        <h1 className="auth-logo">Boomcoart</h1>
+        <h1 className="auth-logo">Musaar</h1>
         <p className="auth-subtitle">Enter your new password below.</p>
         <form className="auth-form" onSubmit={handleSubmit}>
           {[
